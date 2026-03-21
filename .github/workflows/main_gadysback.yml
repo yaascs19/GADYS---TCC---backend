@@ -24,10 +24,16 @@ jobs:
       - name: Build with Maven (skip tests)
         run: mvn clean package -DskipTests
 
+      - name: Prepare deploy package
+        run: |
+          mkdir deploy
+          cp target/gadys-backend-0.0.1-SNAPSHOT.jar deploy/app.jar
+          cp web.config deploy/
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'gadysback'
           slot-name: 'Production'
-          package: target/gadys-backend-0.0.1-SNAPSHOT.jar
+          package: deploy
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_93EAFBA5958E471CA82CDB6F22D2515E }}
