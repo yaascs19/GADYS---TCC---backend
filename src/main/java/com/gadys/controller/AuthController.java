@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
-    
+
     @Autowired
     private AuthService authService;
-    
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/cadastrar")
     public ResponseEntity<LoginResponse> cadastrar(@RequestBody Usuario usuario) {
         LoginResponse response = authService.cadastrar(usuario);
