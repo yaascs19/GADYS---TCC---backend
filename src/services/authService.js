@@ -1,32 +1,33 @@
-const API_BASE_URL = '/api/auth';
+// Este arquivo foi atualizado para corresponder às rotas corretas da API do backend e aos formatos de resposta.
 
 class AuthService {
   // Login
-  async login(email, senha) {
+  async login(email, senha, tipoUsuario) {
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
+      const response = await fetch(`/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, senha }),
+        // IMPORTANTE: O backend requer `tipoUsuario`. Isso precisa ser passado do formulário de login.
+        body: JSON.stringify({ email, senha, tipoUsuario }),
       });
 
       const data = await response.json();
 
-      if (data.sucesso) {
+      if (data.success) {
         const user = {
-          id: data.usuarioId,
-          nome: data.nome,
-          tipoUsuario: data.tipoUsuario
+          id: data.user.ID,
+          nome: data.user.Nome,
+          tipoUsuario: data.user.TipoUsuario
         };
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userType', data.tipoUsuario);
-        localStorage.setItem('userName', data.nome);
+        localStorage.setItem('userType', user.tipoUsuario);
+        localStorage.setItem('userName', user.nome);
         return { success: true, user };
       } else {
-        return { success: false, error: data.mensagem };
+        return { success: false, error: data.error };
       }
     } catch (error) {
       return { success: false, error: 'Erro de conexão com o servidor' };
@@ -36,7 +37,7 @@ class AuthService {
   // Registrar usuário
   async register(userData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/cadastrar`, {
+      const response = await fetch(`/api/usuarios`, { // URL Corrigida
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,10 +52,10 @@ class AuthService {
 
       const data = await response.json();
 
-      if (data.sucesso) {
-        return { success: true, message: data.mensagem };
+      if (data.success) {
+        return { success: true, message: data.message };
       } else {
-        return { success: false, error: data.mensagem };
+        return { success: false, error: data.error };
       }
     } catch (error) {
       return { success: false, error: 'Erro de conexão com o servidor' };
@@ -63,69 +64,26 @@ class AuthService {
 
   // Logout
   logout() {
-    localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userType');
     localStorage.removeItem('userName');
   }
 
-  // Obter perfil
-  async getProfile() {
-    try {
-      const token = this.getToken();
-      if (!token) return { success: false, error: 'Token não encontrado' };
-
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      return await response.json();
-    } catch (error) {
-      return { success: false, error: 'Erro de conexão' };
-    }
-  }
-
-  // Alterar senha
-  async changePassword(senhaAtual, novaSenha) {
-    try {
-      const token = this.getToken();
-      if (!token) return { success: false, error: 'Token não encontrado' };
-
-      const response = await fetch(`${API_BASE_URL}/change-password`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ senhaAtual, novaSenha }),
-      });
-
-      return await response.json();
-    } catch (error) {
-      return { success: false, error: 'Erro de conexão' };
-    }
-  }
-
-  // Utilitários
-  getToken() {
-    return localStorage.getItem('token');
-  }
-
+  // Obter usuário e status de autenticação do localStorage
   getUser() {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }
 
   isAuthenticated() {
-    return !!this.getToken();
+    return localStorage.getItem('isLoggedIn') === 'true';
   }
 
   isAdmin() {
-    const user = this.getUser();
-    return user && user.tipoUsuario === 'adm';
+    const userType = localStorage.getItem('userType');
+    // O backend usa 'ADMIN' e 'USUARIO'
+    return userType === 'ADMIN';
   }
 }
 
