@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "Usuario")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Usuario {
     @Column(name = "ultimo_acesso")
     private LocalDateTime ultimoAcesso;
     
-    @Column(name = "total_acessos")
+    @Column(name = "total_acesso")
     private Integer totalAcessos = 0;
     
     @Column(name = "ip_acesso", length = 45)

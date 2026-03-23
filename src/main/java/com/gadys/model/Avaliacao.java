@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "avaliacoes", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"local_id", "usuario_id"})
+@Table(name = "Avaliacao", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"Localizacao_id", "usuario_id"})
 })
 public class Avaliacao {
     @Id
@@ -13,7 +13,7 @@ public class Avaliacao {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "local_id", nullable = false)
+    @JoinColumn(name = "Localizacao_id", nullable = false)
     private Local local;
     
     @ManyToOne

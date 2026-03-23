@@ -4,14 +4,14 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comentarios")
+@Table(name = "Comentario")
 public class Comentario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "local_id", nullable = false)
+    @JoinColumn(name = "Localizacao_id", nullable = false)
     private Local local;
     
     @ManyToOne

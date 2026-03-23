@@ -30,6 +30,7 @@ public class DataInitializer implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
+        try {
         // Criar usuário admin
         if (!usuarioService.existeEmail("admin@gadys.com")) {
             Usuario admin = new Usuario("Administrador", "admin@gadys.com", "123456");
@@ -68,5 +69,7 @@ public class DataInitializer implements CommandLineRunner {
             categoriaService.salvar(new Categoria("Monumentos", "🏛️", "#607D8B"));
             categoriaService.salvar(new Categoria("Aventura", "🏔️", "#F44336"));
         }
+        } catch (Exception e) {
+            System.err.println("DataInitializer falhou: " + e.getMessage());
+        }
     }
-}

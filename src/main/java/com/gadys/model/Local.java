@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "locais")
+@Table(name = "Localizacao")
 public class Local {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Local {
     @Column(length = 50)
     private String coordenadas;
     
-    @Lob
+    @Column(name = "horario_funcionamento")
     private String horarioFuncionamento;
     
     @Column(length = 100)
