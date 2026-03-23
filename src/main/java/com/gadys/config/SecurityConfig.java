@@ -24,24 +24,25 @@ public class SecurityConfig {
         http
             .cors().and()
             .csrf().disable()
-            .authorizeHttpRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().permitAll();
+            .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 🔥 libera preflight
+                .antMatchers("/api/auth/**").permitAll() // 🔥 libera login/cadastro
+                .anyRequest().authenticated();
 
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        config.setAllowedOrigins(List.of("*")); // libera qualquer origem
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", config);
 
         return source;
     }
