@@ -73,3 +73,4 @@ public class DataInitializer implements CommandLineRunner {
             System.err.println("DataInitializer falhou: " + e.getMessage());
         }
     }
+}
