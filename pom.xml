@@ -30,8 +30,8 @@
         </dependency>
         
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
         
@@ -59,6 +59,7 @@
     </dependencies>
     
     <build>
+        <finalName>gadys-backend</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
