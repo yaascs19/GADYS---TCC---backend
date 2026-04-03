@@ -21,7 +21,7 @@ public class Local {
     @Column(nullable = false, length = 20)
     private String categoria;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 30)
     private String subcategoria;
 
     @Column(length = 100)
@@ -55,7 +55,7 @@ public class Local {
     @Column(name = "enviado_por", length = 100)
     private String enviadoPor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criado_por")
     private Usuario criadoPor;
 
@@ -65,14 +65,14 @@ public class Local {
     @Column(name = "data_aprovacao")
     private LocalDateTime dataAprovacao;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aprovado_por")
     private Usuario aprovadoPor;
 
-    @OneToMany(mappedBy = "local", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "local", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Avaliacao> avaliacoes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "local", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "local", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comentario> comentarios = new ArrayList<>();
 
     public Local() {}
