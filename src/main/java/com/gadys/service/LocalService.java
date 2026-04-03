@@ -11,26 +11,46 @@ import java.util.Optional;
 
 @Service
 public class LocalService {
-    
+
     @Autowired
     private LocalRepository localRepository;
-    
+
     public List<Local> listarTodos() {
         return localRepository.findAll();
     }
-    
+
     public List<Local> listarAtivos() {
         return localRepository.findByStatus(StatusLocal.ATIVO);
     }
-    
+
     public Optional<Local> buscarPorId(Long id) {
         return localRepository.findById(id);
     }
-    
+
+    public List<Local> buscarPorCategoria(String categoria) {
+        return localRepository.findByCategoria(categoria);
+    }
+
+    public List<Local> buscarPorSubcategoria(String subcategoria) {
+        return localRepository.findBySubcategoria(subcategoria);
+    }
+
+    public List<Local> buscarPorCidade(String cidade) {
+        return localRepository.findByCidade(cidade);
+    }
+
+    public List<Local> buscarPorEstado(String estado) {
+        return localRepository.findByEstado(estado);
+    }
+
+    public List<Local> buscarPorNome(String nome) {
+        return localRepository.findByNomeContaining(nome);
+    }
+
     public Local salvar(Local local) {
         return localRepository.save(local);
     }
-    
+
     public void aprovarLocal(Long id, Usuario admin) {
         Optional<Local> localOpt = localRepository.findById(id);
         if (localOpt.isPresent() && admin.isAdmin()) {
@@ -39,7 +59,7 @@ public class LocalService {
             localRepository.save(local);
         }
     }
-    
+
     public void rejeitarLocal(Long id, Usuario admin) {
         Optional<Local> localOpt = localRepository.findById(id);
         if (localOpt.isPresent() && admin.isAdmin()) {
@@ -48,11 +68,7 @@ public class LocalService {
             localRepository.save(local);
         }
     }
-    
-    public List<Local> buscarPorNome(String nome) {
-        return localRepository.findByNomeContaining(nome);
-    }
-    
+
     public void excluir(Long id) {
         localRepository.deleteById(id);
     }
