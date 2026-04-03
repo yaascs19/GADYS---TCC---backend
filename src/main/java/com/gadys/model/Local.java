@@ -43,6 +43,7 @@ public class Local {
     private String preco;
 
     @Lob
+    @Column(name = "informacoes_adicionais")
     private String informacoesAdicionais;
 
     @Column(name = "imagem_url", length = 500)
