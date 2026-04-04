@@ -141,6 +141,16 @@ public class LocalController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{id}/inativar")
+    public ResponseEntity<?> toggleInativar(@PathVariable Long id) {
+        Optional<Local> localOpt = localService.buscarPorId(id);
+        if (localOpt.isEmpty()) return ResponseEntity.notFound().build();
+        Local local = localOpt.get();
+        local.setStatus(local.getStatus() == StatusLocal.ATIVO ? StatusLocal.INATIVO : StatusLocal.ATIVO);
+        localService.salvar(local);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}/aprovar")
     public ResponseEntity<?> aprovarPut(@PathVariable Long id, @RequestParam Long adminId) {
         Optional<Usuario> admin = usuarioService.buscarPorId(adminId);
