@@ -25,6 +25,9 @@ public class Usuario {
     @Column(name = "tipo_usuario", length = 10)
     private TipoUsuario tipoUsuario = TipoUsuario.USUARIO;
 
+    @Column(name = "ativo")
+    private Boolean ativo = true;
+
     @Column(name = "ultimo_acesso")
     private LocalDateTime ultimoAcesso;
 
@@ -62,6 +65,9 @@ public class Usuario {
 
     public TipoUsuario getTipoUsuario() { return tipoUsuario; }
     public void setTipoUsuario(TipoUsuario tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+
+    public Boolean getAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
 
     public LocalDateTime getUltimoAcesso() { return ultimoAcesso; }
     public void setUltimoAcesso(LocalDateTime ultimoAcesso) { this.ultimoAcesso = ultimoAcesso; }

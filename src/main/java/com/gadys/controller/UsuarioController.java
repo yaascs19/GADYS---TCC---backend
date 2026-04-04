@@ -53,6 +53,16 @@ public class UsuarioController {
         }
         return ResponseEntity.badRequest().body("Email ou senha inválidos");
     }
+
+    @PostMapping("/{id}/inativar")
+    public ResponseEntity<?> toggleAtivo(@PathVariable Long id) {
+        Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(id);
+        if (usuarioOpt.isEmpty()) return ResponseEntity.notFound().build();
+        Usuario usuario = usuarioOpt.get();
+        usuario.setAtivo(!usuario.getAtivo());
+        usuarioService.salvar(usuario);
+        return ResponseEntity.ok().build();
+    }
     
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @Valid @RequestBody UsuarioDTO dto) {
