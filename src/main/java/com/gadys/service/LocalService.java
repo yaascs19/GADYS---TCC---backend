@@ -23,6 +23,18 @@ public class LocalService {
         return localRepository.findByStatus(StatusLocal.ATIVO);
     }
 
+    public List<Local> listarPendentes() {
+        return localRepository.findByStatus(StatusLocal.PENDENTE);
+    }
+
+    public List<Local> listarAprovados() {
+        return localRepository.findByStatus(StatusLocal.ATIVO);
+    }
+
+    public List<Local> listarLixeira() {
+        return localRepository.findByStatus(StatusLocal.LIXEIRA);
+    }
+
     public Optional<Local> buscarPorId(Long id) {
         return localRepository.findById(id);
     }
@@ -52,21 +64,31 @@ public class LocalService {
     }
 
     public void aprovarLocal(Long id, Usuario admin) {
-        Optional<Local> localOpt = localRepository.findById(id);
-        if (localOpt.isPresent() && admin.isAdmin()) {
-            Local local = localOpt.get();
+        localRepository.findById(id).ifPresent(local -> {
             local.aprovar(admin);
             localRepository.save(local);
-        }
+        });
     }
 
     public void rejeitarLocal(Long id, Usuario admin) {
-        Optional<Local> localOpt = localRepository.findById(id);
-        if (localOpt.isPresent() && admin.isAdmin()) {
-            Local local = localOpt.get();
+        localRepository.findById(id).ifPresent(local -> {
             local.rejeitar(admin);
             localRepository.save(local);
-        }
+        });
+    }
+
+    public void moverParaLixeira(Long id) {
+        localRepository.findById(id).ifPresent(local -> {
+            local.setStatus(StatusLocal.LIXEIRA);
+            localRepository.save(local);
+        });
+    }
+
+    public void restaurarDaLixeira(Long id) {
+        localRepository.findById(id).ifPresent(local -> {
+            local.setStatus(StatusLocal.ATIVO);
+            localRepository.save(local);
+        });
     }
 
     public void excluir(Long id) {

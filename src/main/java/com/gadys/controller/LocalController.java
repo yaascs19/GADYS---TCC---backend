@@ -34,6 +34,21 @@ public class LocalController {
         return localService.listarAtivos();
     }
 
+    @GetMapping("/pendentes")
+    public List<Local> listarPendentes() {
+        return localService.listarPendentes();
+    }
+
+    @GetMapping("/aprovados")
+    public List<Local> listarAprovados() {
+        return localService.listarAprovados();
+    }
+
+    @GetMapping("/lixeira")
+    public List<Local> listarLixeira() {
+        return localService.listarLixeira();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Local> buscar(@PathVariable Long id) {
         return localService.buscarPorId(id)
@@ -92,8 +107,42 @@ public class LocalController {
         return ResponseEntity.ok(localService.salvar(local));
     }
 
+    @PostMapping("/aprovar/{id}")
+    public ResponseEntity<?> aprovar(@PathVariable Long id) {
+        Long adminId = Long.parseLong(System.getProperty("admin.id", "1"));
+        Optional<Usuario> admin = usuarioService.buscarPorId(adminId);
+        if (admin.isEmpty() || !admin.get().isAdmin()) {
+            return ResponseEntity.badRequest().body("Usuário não é admin");
+        }
+        localService.aprovarLocal(id, admin.get());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/rejeitar/{id}")
+    public ResponseEntity<?> rejeitar(@PathVariable Long id) {
+        Long adminId = Long.parseLong(System.getProperty("admin.id", "1"));
+        Optional<Usuario> admin = usuarioService.buscarPorId(adminId);
+        if (admin.isEmpty() || !admin.get().isAdmin()) {
+            return ResponseEntity.badRequest().body("Usuário não é admin");
+        }
+        localService.rejeitarLocal(id, admin.get());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/excluir/{id}")
+    public ResponseEntity<?> moverParaLixeira(@PathVariable Long id) {
+        localService.moverParaLixeira(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/restaurar/{id}")
+    public ResponseEntity<?> restaurar(@PathVariable Long id) {
+        localService.restaurarDaLixeira(id);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}/aprovar")
-    public ResponseEntity<?> aprovar(@PathVariable Long id, @RequestParam Long adminId) {
+    public ResponseEntity<?> aprovarPut(@PathVariable Long id, @RequestParam Long adminId) {
         Optional<Usuario> admin = usuarioService.buscarPorId(adminId);
         if (admin.isEmpty() || !admin.get().isAdmin()) {
             return ResponseEntity.badRequest().body("Usuário não é admin");
@@ -103,7 +152,7 @@ public class LocalController {
     }
 
     @PutMapping("/{id}/rejeitar")
-    public ResponseEntity<?> rejeitar(@PathVariable Long id, @RequestParam Long adminId) {
+    public ResponseEntity<?> rejeitarPut(@PathVariable Long id, @RequestParam Long adminId) {
         Optional<Usuario> admin = usuarioService.buscarPorId(adminId);
         if (admin.isEmpty() || !admin.get().isAdmin()) {
             return ResponseEntity.badRequest().body("Usuário não é admin");
@@ -114,6 +163,15 @@ public class LocalController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        if (localService.buscarPorId(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        localService.excluir(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/lixeira/{id}")
+    public ResponseEntity<Void> excluirPermanente(@PathVariable Long id) {
         if (localService.buscarPorId(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
