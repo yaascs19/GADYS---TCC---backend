@@ -1,6 +1,5 @@
 package com.gadys.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,7 +40,6 @@ public class Usuario {
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "criadoPor")
     private List<Local> locaisCriados = new ArrayList<>();
 

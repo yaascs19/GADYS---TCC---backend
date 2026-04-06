@@ -1,6 +1,5 @@
 package com.gadys.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,12 +10,10 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "Localizacao_id", nullable = false)
     private Local local;
     
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
