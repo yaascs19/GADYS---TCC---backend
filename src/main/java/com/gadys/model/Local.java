@@ -1,5 +1,6 @@
 package com.gadys.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class Local {
     @Column(name = "enviado_por", length = 100)
     private String enviadoPor;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "criado_por")
     private Usuario criadoPor;
@@ -65,13 +67,16 @@ public class Local {
     @Column(name = "data_aprovacao")
     private LocalDateTime dataAprovacao;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aprovado_por")
     private Usuario aprovadoPor;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "local", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Avaliacao> avaliacoes = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "local", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comentario> comentarios = new ArrayList<>();
 
