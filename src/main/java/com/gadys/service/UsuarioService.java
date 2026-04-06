@@ -31,7 +31,6 @@ public class UsuarioService {
     }
     
     public Usuario salvar(Usuario usuario) {
-        // Criptografar senha se for nova ou alterada
         if (usuario.getId() == null || !usuario.getSenha().startsWith("$2a$")) {
             usuario.setSenha(passwordUtil.encode(usuario.getSenha()));
         }
@@ -46,6 +45,9 @@ public class UsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
         if (usuario.isPresent() && passwordUtil.matches(senha, usuario.get().getSenha())) {
             Usuario u = usuario.get();
+            if (Boolean.FALSE.equals(u.getAtivo())) {
+                return Optional.empty();
+            }
             u.setUltimoAcesso(LocalDateTime.now());
             u.setTotalAcessos(u.getTotalAcessos() + 1);
             usuarioRepository.save(u);
