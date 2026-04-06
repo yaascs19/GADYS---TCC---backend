@@ -8,8 +8,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -20,8 +23,19 @@ public class UsuarioController {
     private UsuarioService usuarioService;
     
     @GetMapping
-    public List<Usuario> listar() {
-        return usuarioService.listarTodos();
+    public ResponseEntity<List<Map<String, Object>>> listar() {
+        List<Usuario> usuarios = usuarioService.listarTodos();
+        List<Map<String, Object>> result = usuarios.stream().map(u -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", u.getId());
+            map.put("nome", u.getNome());
+            map.put("email", u.getEmail());
+            map.put("tipoUsuario", u.getTipoUsuario());
+            map.put("ativo", u.getAtivo());
+            map.put("dataCadastro", u.getDataCadastro());
+            return map;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
     
     @GetMapping("/{id}")
