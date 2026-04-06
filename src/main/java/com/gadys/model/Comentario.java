@@ -1,5 +1,6 @@
 package com.gadys.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -10,10 +11,12 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "Localizacao_id", nullable = false)
     private Local local;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
@@ -25,7 +28,6 @@ public class Comentario {
     @Column(name = "data_comentario")
     private LocalDateTime dataComentario = LocalDateTime.now();
     
-    // Construtores
     public Comentario() {}
     
     public Comentario(Local local, Usuario usuario, String texto) {
@@ -34,7 +36,6 @@ public class Comentario {
         this.texto = texto;
     }
     
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -50,7 +51,6 @@ public class Comentario {
     public LocalDateTime getDataComentario() { return dataComentario; }
     public void setDataComentario(LocalDateTime dataComentario) { this.dataComentario = dataComentario; }
     
-    // Métodos de negócio
     public void editar(String novoTexto) {
         this.texto = novoTexto;
         this.dataComentario = LocalDateTime.now();
