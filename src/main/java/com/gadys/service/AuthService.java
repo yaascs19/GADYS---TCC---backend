@@ -31,8 +31,11 @@ public class AuthService {
         }
         
         Usuario usuario = usuarioOpt.get();
-        
-        // Usuário sempre ativo por padrão
+
+        if (Boolean.FALSE.equals(usuario.getAtivo())) {
+            logger.warn("❌ LOGIN FALHOU - Conta inativada: {}", request.getEmail());
+            return new LoginResponse(false, "Conta inativada. Entre em contato com o administrador.");
+        }
         
         if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
             logger.warn("❌ LOGIN FALHOU - Senha incorreta para: {}", request.getEmail());
