@@ -1,5 +1,6 @@
 package com.gadys.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -122,6 +123,7 @@ public class Local {
     public String getEnviadoPor() { return enviadoPor; }
     public void setEnviadoPor(String enviadoPor) { this.enviadoPor = enviadoPor; }
 
+    @JsonIgnore
     public Usuario getCriadoPor() { return criadoPor; }
     public void setCriadoPor(Usuario criadoPor) { this.criadoPor = criadoPor; }
 
@@ -131,12 +133,15 @@ public class Local {
     public LocalDateTime getDataAprovacao() { return dataAprovacao; }
     public void setDataAprovacao(LocalDateTime dataAprovacao) { this.dataAprovacao = dataAprovacao; }
 
+    @JsonIgnore
     public Usuario getAprovadoPor() { return aprovadoPor; }
     public void setAprovadoPor(Usuario aprovadoPor) { this.aprovadoPor = aprovadoPor; }
 
+    @JsonIgnore
     public List<Avaliacao> getAvaliacoes() { return avaliacoes; }
     public void setAvaliacoes(List<Avaliacao> avaliacoes) { this.avaliacoes = avaliacoes; }
 
+    @JsonIgnore
     public List<Comentario> getComentarios() { return comentarios; }
     public void setComentarios(List<Comentario> comentarios) { this.comentarios = comentarios; }
 
