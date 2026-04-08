@@ -107,6 +107,16 @@ public class LocalController {
         return ResponseEntity.ok(localService.salvar(local));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody LocalDTO dto) {
+        try {
+            Local atualizado = localService.atualizar(id, dto);
+            return ResponseEntity.ok(atualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/aprovar/{id}")
     public ResponseEntity<?> aprovar(@PathVariable Long id) {
         Long adminId = Long.parseLong(System.getProperty("admin.id", "1"));

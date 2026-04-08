@@ -1,5 +1,6 @@
 package com.gadys.service;
 
+import com.gadys.dto.LocalDTO;
 import com.gadys.model.Local;
 import com.gadys.model.StatusLocal;
 import com.gadys.model.Usuario;
@@ -61,6 +62,25 @@ public class LocalService {
 
     public Local salvar(Local local) {
         return localRepository.save(local);
+    }
+
+    public Local atualizar(Long id, LocalDTO dto) {
+        return localRepository.findById(id).map(local -> {
+            local.setNome(dto.getNome());
+            local.setDescricao(dto.getDescricao());
+            local.setCategoria(dto.getCategoria());
+            local.setSubcategoria(dto.getSubcategoria());
+            local.setCidade(dto.getCidade());
+            local.setEstado(dto.getEstado());
+            local.setEndereco(dto.getEndereco());
+            local.setCoordenadas(dto.getCoordenadas());
+            local.setHorarioFuncionamento(dto.getHorarioFuncionamento());
+            local.setPreco(dto.getPreco());
+            local.setInformacoesAdicionais(dto.getInformacoesAdicionais());
+            local.setImagemUrl(dto.getImagemUrl());
+            local.setEnviadoPor(dto.getEnviadoPor());
+            return localRepository.save(local);
+        }).orElseThrow(() -> new RuntimeException("Local não encontrado"));
     }
 
     public void aprovarLocal(Long id, Usuario admin) {
