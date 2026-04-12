@@ -50,6 +50,9 @@ public class Local {
     @Column(name = "imagem_url", length = 500)
     private String imagemUrl;
 
+    @Column(name = "rota_frontend", length = 200)
+    private String rotaFrontend;
+
     @Enumerated(EnumType.STRING)
     private StatusLocal status = StatusLocal.PENDENTE;
 
@@ -116,6 +119,9 @@ public class Local {
 
     public String getImagemUrl() { return imagemUrl; }
     public void setImagemUrl(String imagemUrl) { this.imagemUrl = imagemUrl; }
+
+    public String getRotaFrontend() { return rotaFrontend; }
+    public void setRotaFrontend(String rotaFrontend) { this.rotaFrontend = rotaFrontend; }
 
     public StatusLocal getStatus() { return status; }
     public void setStatus(StatusLocal status) { this.status = status; }
