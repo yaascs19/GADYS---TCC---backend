@@ -11,41 +11,41 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService {
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Autowired
     private PasswordUtil passwordUtil;
-    
+
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
     }
-    
+
     public Optional<Usuario> buscarPorId(Long id) {
         return usuarioRepository.findById(id);
     }
-    
+
     public Optional<Usuario> buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
-    
+
     public Usuario salvar(Usuario usuario) {
         if (usuario.getId() == null || !usuario.getSenha().startsWith("$2a$")) {
             usuario.setSenha(passwordUtil.encode(usuario.getSenha()));
         }
         return usuarioRepository.save(usuario);
     }
-    
+
     public boolean existeEmail(String email) {
         return usuarioRepository.existsByEmail(email);
     }
-    
+
     public Optional<Usuario> autenticar(String email, String senha) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
         if (usuario.isPresent() && passwordUtil.matches(senha, usuario.get().getSenha())) {
             Usuario u = usuario.get();
-            if (Boolean.FALSE.equals(u.getAtivo())) {
+            if ("INATIVO".equals(u.getAtivo())) {
                 return Optional.empty();
             }
             u.setUltimoAcesso(LocalDateTime.now());
@@ -55,7 +55,7 @@ public class UsuarioService {
         }
         return Optional.empty();
     }
-    
+
     public void excluir(Long id) {
         usuarioRepository.deleteById(id);
     }

@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/usuarios")
 @CrossOrigin(origins = "*")
 public class UsuarioController {
-    
+
     @Autowired
     private UsuarioService usuarioService;
-    
+
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> listar() {
         List<Usuario> usuarios = usuarioService.listarTodos();
@@ -37,28 +37,26 @@ public class UsuarioController {
         }).collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> buscar(@PathVariable Long id) {
         Optional<Usuario> usuario = usuarioService.buscarPorId(id);
         return usuario.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-    
+
     @PostMapping
     public ResponseEntity<?> criar(@Valid @RequestBody UsuarioDTO dto) {
         if (usuarioService.existeEmail(dto.getEmail())) {
             return ResponseEntity.badRequest().body("Email já cadastrado");
         }
-        
         Usuario usuario = new Usuario(dto.getNome(), dto.getEmail(), dto.getSenha());
         if (dto.getTipoUsuario() != null) {
             usuario.setTipoUsuario(dto.getTipoUsuario());
         }
-        
         Usuario salvo = usuarioService.salvar(usuario);
         return ResponseEntity.ok(salvo);
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDTO dto) {
         Optional<Usuario> usuario = usuarioService.autenticar(dto.getEmail(), dto.getSenha());
@@ -73,29 +71,25 @@ public class UsuarioController {
         Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(id);
         if (usuarioOpt.isEmpty()) return ResponseEntity.notFound().build();
         Usuario usuario = usuarioOpt.get();
-        usuario.setAtivo(!usuario.getAtivo());
+        usuario.setAtivo("ATIVO".equals(usuario.getAtivo()) ? "INATIVO" : "ATIVO");
         usuarioService.salvar(usuario);
         return ResponseEntity.ok().build();
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @Valid @RequestBody UsuarioDTO dto) {
         Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(id);
-        if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        
+        if (usuarioOpt.isEmpty()) return ResponseEntity.notFound().build();
         Usuario usuario = usuarioOpt.get();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
             usuario.setSenha(dto.getSenha());
         }
-        
         Usuario salvo = usuarioService.salvar(usuario);
         return ResponseEntity.ok(salvo);
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         if (usuarioService.buscarPorId(id).isEmpty()) {
