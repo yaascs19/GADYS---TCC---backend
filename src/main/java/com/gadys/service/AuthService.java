@@ -32,7 +32,7 @@ public class AuthService {
         
         Usuario usuario = usuarioOpt.get();
 
-        if (Boolean.FALSE.equals(usuario.getAtivo())) {
+        if ("INATIVO".equals(usuario.getAtivo())) {
             logger.warn("❌ LOGIN FALHOU - Conta inativada: {}", request.getEmail());
             return new LoginResponse(false, "Conta inativada. Entre em contato com o administrador.");
         }
