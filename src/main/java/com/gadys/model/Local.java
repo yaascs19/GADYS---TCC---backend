@@ -17,6 +17,7 @@ public class Local {
     private String nome;
 
     @Lob
+    @Column(name = "descricao")
     private String descricao;
 
     @Column(nullable = false, length = 20)
@@ -32,6 +33,7 @@ public class Local {
     private String estado;
 
     @Lob
+    @Column(name = "endereco")
     private String endereco;
 
     @Column(length = 50)
