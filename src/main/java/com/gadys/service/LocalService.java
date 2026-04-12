@@ -32,10 +32,6 @@ public class LocalService {
         return localRepository.findByStatus(StatusLocal.ATIVO);
     }
 
-    public List<Local> listarLixeira() {
-        return localRepository.findByStatus(StatusLocal.LIXEIRA);
-    }
-
     public Optional<Local> buscarPorId(Long id) {
         return localRepository.findById(id);
     }
@@ -93,20 +89,6 @@ public class LocalService {
     public void rejeitarLocal(Long id, Usuario admin) {
         localRepository.findById(id).ifPresent(local -> {
             local.rejeitar(admin);
-            localRepository.save(local);
-        });
-    }
-
-    public void moverParaLixeira(Long id) {
-        localRepository.findById(id).ifPresent(local -> {
-            local.setStatus(StatusLocal.LIXEIRA);
-            localRepository.save(local);
-        });
-    }
-
-    public void restaurarDaLixeira(Long id) {
-        localRepository.findById(id).ifPresent(local -> {
-            local.setStatus(StatusLocal.ATIVO);
             localRepository.save(local);
         });
     }
