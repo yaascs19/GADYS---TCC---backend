@@ -3,6 +3,7 @@ package com.gadys.dto;
 public class LoginRequest {
     private String email;
     private String senha;
+    private String recaptchaToken;
     
     public LoginRequest() {}
     
@@ -16,4 +17,7 @@ public class LoginRequest {
     
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getRecaptchaToken() { return recaptchaToken; }
+    public void setRecaptchaToken(String recaptchaToken) { this.recaptchaToken = recaptchaToken; }
 }

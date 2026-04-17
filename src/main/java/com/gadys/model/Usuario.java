@@ -41,6 +41,9 @@ public class Usuario {
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
+    @Transient
+    private String recaptchaToken;
+
     @OneToMany(mappedBy = "criadoPor")
     private List<Local> locaisCriados = new ArrayList<>();
 
@@ -85,6 +88,9 @@ public class Usuario {
     @JsonIgnore
     public List<Local> getLocaisCriados() { return locaisCriados; }
     public void setLocaisCriados(List<Local> locaisCriados) { this.locaisCriados = locaisCriados; }
+
+    public String getRecaptchaToken() { return recaptchaToken; }
+    public void setRecaptchaToken(String recaptchaToken) { this.recaptchaToken = recaptchaToken; }
 
     public boolean isAdmin() {
         return TipoUsuario.ADM.equals(this.tipoUsuario);
