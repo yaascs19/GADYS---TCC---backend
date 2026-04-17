@@ -20,7 +20,7 @@ import java.util.Optional;
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
-    private static final String RECAPTCHA_SECRET = "6LfPpbwsAAAAANlaRSGkV9MOESZmutPRCVKNdSus";
+    private static final String RECAPTCHA_SECRET = System.getenv().getOrDefault("RECAPTCHA_SECRET_KEY", "");
     private static final String RECAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify";
 
     @Autowired
