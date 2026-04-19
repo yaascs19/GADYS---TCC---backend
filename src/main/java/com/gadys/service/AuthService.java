@@ -2,19 +2,26 @@ package com.gadys.service;
 
 import com.gadys.dto.LoginRequest;
 import com.gadys.dto.LoginResponse;
+import com.gadys.model.PasswordResetToken;
 import com.gadys.model.Usuario;
+import com.gadys.repository.PasswordResetTokenRepository;
 import com.gadys.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -25,6 +32,12 @@ public class AuthService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository tokenRepository;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private RestTemplate restTemplate = new RestTemplate();
@@ -64,7 +77,7 @@ public class AuthService {
 
         Usuario usuario = usuarioOpt.get();
 
-        if ("INATIVO".equals(usuario.getAtivo())) {
+        if (Boolean.FALSE.equals(usuario.getAtivo())) {
             logger.warn("❌ LOGIN FALHOU - Conta inativada: {}", request.getEmail());
             return new LoginResponse(false, "Conta inativada. Entre em contato com o administrador.");
         }
@@ -105,5 +118,69 @@ public class AuthService {
 
         return new LoginResponse(true, "Usuário cadastrado com sucesso",
                 usuarioSalvo.getId(), usuarioSalvo.getNome(), usuarioSalvo.getTipoUsuario().toString());
+    }
+
+    public LoginResponse loginGoogle(String email, String nome) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+
+        Usuario usuario;
+        if (usuarioOpt.isPresent()) {
+            usuario = usuarioOpt.get();
+            if (Boolean.FALSE.equals(usuario.getAtivo())) {
+                return new LoginResponse(false, "Conta inativada. Entre em contato com o administrador.");
+            }
+            logger.info("✅ LOGIN GOOGLE - Usuário existente: {}", email);
+        } else {
+            usuario = new Usuario(nome, email, UUID.randomUUID().toString());
+            usuario.setTipoUsuario(com.gadys.model.TipoUsuario.USUARIO);
+            usuario = usuarioRepository.save(usuario);
+            logger.info("✅ LOGIN GOOGLE - Novo usuário criado: {}", email);
+        }
+
+        return new LoginResponse(true, "Login realizado com sucesso",
+                usuario.getId(), usuario.getNome(), usuario.getTipoUsuario().toString());
+    }
+
+    @Transactional
+    public LoginResponse esqueciSenha(String email) {
+        tokenRepository.deleteByEmail(email);
+
+        if (usuarioRepository.findByEmail(email).isPresent()) {
+            String token = UUID.randomUUID().toString();
+            tokenRepository.save(new PasswordResetToken(email, token, LocalDateTime.now().plusHours(1)));
+
+            SimpleMailMessage msg = new SimpleMailMessage();
+            msg.setTo(email);
+            msg.setSubject("Redefinição de senha - GADYS");
+            msg.setText("Clique no link para redefinir sua senha:\n\n" +
+                "https://gadys-tcc.vercel.app/redefinir-senha?token=" + token +
+                "\n\nO link expira em 1 hora.");
+            mailSender.send(msg);
+        }
+
+        return new LoginResponse(true, "Email enviado com instruções.");
+    }
+
+    @Transactional
+    public LoginResponse redefinirSenha(String token, String novaSenha) {
+        Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
+
+        if (tokenOpt.isEmpty() || LocalDateTime.now().isAfter(tokenOpt.get().getExpiracao())) {
+            return new LoginResponse(false, "Link inválido ou expirado.");
+        }
+
+        PasswordResetToken resetToken = tokenOpt.get();
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(resetToken.getEmail());
+
+        if (usuarioOpt.isEmpty()) {
+            return new LoginResponse(false, "Usuário não encontrado.");
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        usuarioRepository.save(usuario);
+        tokenRepository.delete(resetToken);
+
+        return new LoginResponse(true, "Senha redefinida com sucesso.");
     }
 }
