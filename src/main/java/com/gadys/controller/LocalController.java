@@ -169,7 +169,7 @@ public class LocalController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/geocodificar-todos")
+    @PostMapping("/admin/geocodificar-todos")
     public ResponseEntity<?> geocodificarTodos() {
         int atualizados = localService.geocodificarLocaisSemCoordenadas();
         return ResponseEntity.ok("Coordenadas atualizadas: " + atualizados + " locais.");
