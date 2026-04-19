@@ -168,4 +168,10 @@ public class LocalController {
         localService.excluir(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/geocodificar-todos")
+    public ResponseEntity<?> geocodificarTodos() {
+        int atualizados = localService.geocodificarLocaisSemCoordenadas();
+        return ResponseEntity.ok("Coordenadas atualizadas: " + atualizados + " locais.");
+    }
 }

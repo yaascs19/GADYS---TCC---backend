@@ -100,4 +100,52 @@ public class LocalService {
     public void excluir(Long id) {
         localRepository.deleteById(id);
     }
+
+    public int geocodificarLocaisSemCoordenadas() {
+        List<Local> locais = localRepository.findAll().stream()
+            .filter(l -> l.getCoordenadas() == null || l.getCoordenadas().isBlank())
+            .collect(java.util.stream.Collectors.toList());
+
+        int count = 0;
+        for (Local local : locais) {
+            String coords = buscarCoordenadas(local.getEndereco(), local.getCidade(), local.getEstado());
+            if (coords != null) {
+                local.setCoordenadas(coords);
+                localRepository.save(local);
+                count++;
+            }
+            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+        }
+        return count;
+    }
+
+    private String buscarCoordenadas(String endereco, String cidade, String estado) {
+        try {
+            String query = (endereco != null && !endereco.isBlank())
+                ? endereco + ", " + cidade + ", Brasil"
+                : cidade + ", " + estado + ", Brasil";
+
+            String url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q="
+                + java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
+
+            java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(url))
+                .header("User-Agent", "GADYS-TCC/1.0")
+                .build();
+
+            java.net.http.HttpResponse<String> response = client.send(
+                request, java.net.http.HttpResponse.BodyHandlers.ofString());
+
+            String body = response.body();
+            if (body.contains("\"lat\"")) {
+                String lat = body.split("\"lat\":\"" )[1].split("\"")[0];
+                String lon = body.split("\"lon\":\"" )[1].split("\"")[0];
+                return lat + "," + lon;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao geocodificar: " + e.getMessage());
+        }
+        return null;
+    }
 }
