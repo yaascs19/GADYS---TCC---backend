@@ -102,9 +102,7 @@ public class LocalService {
     }
 
     public int geocodificarLocaisSemCoordenadas() {
-        List<Local> locais = localRepository.findAll().stream()
-            .filter(l -> l.getCoordenadas() == null || l.getCoordenadas().isBlank())
-            .collect(java.util.stream.Collectors.toList());
+        List<Local> locais = localRepository.findSemCoordenadas();
 
         int count = 0;
         for (Local local : locais) {
