@@ -173,6 +173,32 @@ public class LocalController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/admin/teste-nominatim")
+    public ResponseEntity<?> testeNominatim(@RequestParam String cidade, @RequestParam String estado) {
+        try {
+            String query = cidade + ", " + estado + ", Brasil";
+            String url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q="
+                + java.net.URLEncoder.encode(query, "UTF-8");
+
+            java.net.URL nominatim = new java.net.URL(url);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) nominatim.openConnection();
+            conn.setRequestProperty("User-Agent", "GADYS-TCC/1.0");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) sb.append(line);
+            reader.close();
+
+            return ResponseEntity.ok(sb.toString());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/admin/diagnostico-coords")
     public ResponseEntity<?> diagnostico() {
         List<Local> todos = localRepository.findAll();
