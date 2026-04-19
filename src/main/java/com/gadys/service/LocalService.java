@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LocalService {
@@ -102,47 +103,53 @@ public class LocalService {
     }
 
     public int geocodificarLocaisSemCoordenadas() {
-        List<Local> locais = localRepository.findSemCoordenadas();
+        List<Local> semCoords = localRepository.findAll().stream()
+            .filter(l -> l.getCoordenadas() == null || l.getCoordenadas().trim().isEmpty())
+            .collect(Collectors.toList());
 
         int count = 0;
-        for (Local local : locais) {
+        for (Local local : semCoords) {
             String coords = buscarCoordenadas(local.getEndereco(), local.getCidade(), local.getEstado());
             if (coords != null) {
                 local.setCoordenadas(coords);
                 localRepository.save(local);
                 count++;
             }
-            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+            try { Thread.sleep(1100); } catch (InterruptedException ignored) {}
         }
         return count;
     }
 
     private String buscarCoordenadas(String endereco, String cidade, String estado) {
         try {
-            String query = (endereco != null && !endereco.isBlank())
+            String query = (endereco != null && !endereco.trim().isEmpty())
                 ? endereco + ", " + cidade + ", Brasil"
                 : cidade + ", " + estado + ", Brasil";
 
             String url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q="
-                + java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
+                + java.net.URLEncoder.encode(query, "UTF-8");
 
-            java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
-            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                .uri(java.net.URI.create(url))
-                .header("User-Agent", "GADYS-TCC/1.0")
-                .build();
+            java.net.URL nominatim = new java.net.URL(url);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) nominatim.openConnection();
+            conn.setRequestProperty("User-Agent", "GADYS-TCC/1.0");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
 
-            java.net.http.HttpResponse<String> response = client.send(
-                request, java.net.http.HttpResponse.BodyHandlers.ofString());
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) sb.append(line);
+            reader.close();
 
-            String body = response.body();
+            String body = sb.toString();
             if (body.contains("\"lat\"")) {
-                String lat = body.split("\"lat\":\"" )[1].split("\"")[0];
-                String lon = body.split("\"lon\":\"" )[1].split("\"")[0];
+                String lat = body.split("\"lat\":\"")[1].split("\"")[0];
+                String lon = body.split("\"lon\":\"")[1].split("\"")[0];
                 return lat + "," + lon;
             }
         } catch (Exception e) {
-            System.err.println("Erro ao geocodificar: " + e.getMessage());
+            System.err.println("Erro ao geocodificar " + cidade + ": " + e.getMessage());
         }
         return null;
     }

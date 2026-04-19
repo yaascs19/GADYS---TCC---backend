@@ -16,10 +16,8 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
     List<Local> findByCidade(String cidade);
     List<Local> findByEstado(String estado);
 
-    @Query("SELECT l FROM Local l WHERE l.coordenadas IS NULL OR l.coordenadas = ''")
-    List<Local> findSemCoordenadas();
-
     @Query("SELECT l FROM Local l WHERE l.nome LIKE %?1%")
     List<Local> findByNomeContaining(String nome);
+
     Optional<Local> findByRotaFrontend(String rotaFrontend);
 }
