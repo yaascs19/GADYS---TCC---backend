@@ -103,9 +103,7 @@ public class LocalService {
     }
 
     public int geocodificarLocaisSemCoordenadas() {
-        List<Local> semCoords = localRepository.findAll().stream()
-            .filter(l -> l.getCoordenadas() == null || l.getCoordenadas().trim().isEmpty())
-            .collect(Collectors.toList());
+        List<Local> semCoords = localRepository.findSemCoordenadas();
 
         int count = 0;
         for (Local local : semCoords) {
@@ -121,35 +119,42 @@ public class LocalService {
     }
 
     private String buscarCoordenadas(String endereco, String cidade, String estado) {
-        try {
-            String query = (endereco != null && !endereco.trim().isEmpty())
-                ? endereco + ", " + cidade + ", Brasil"
-                : cidade + ", " + estado + ", Brasil";
+        String GEOAPIFY_KEY = "b5509ede52e14e848d51c5fbf09f520d";
 
-            String url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q="
-                + java.net.URLEncoder.encode(query, "UTF-8");
+        String[] tentativas = {
+            (endereco != null && !endereco.trim().isEmpty()) ? endereco + ", " + cidade + ", Brasil" : null,
+            cidade + ", " + estado + ", Brasil",
+        };
 
-            java.net.URL nominatim = new java.net.URL(url);
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) nominatim.openConnection();
-            conn.setRequestProperty("User-Agent", "GADYS-TCC/1.0");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
+        for (String query : tentativas) {
+            if (query == null) continue;
+            try {
+                String url = "https://api.geoapify.com/v1/geocode/search?text="
+                    + java.net.URLEncoder.encode(query, "UTF-8")
+                    + "&filter=countrycode:br&lang=pt&limit=1&apiKey=" + GEOAPIFY_KEY;
 
-            java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.InputStreamReader(conn.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) sb.append(line);
-            reader.close();
+                java.net.URL geoapify = new java.net.URL(url);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) geoapify.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
 
-            String body = sb.toString();
-            if (body.contains("\"lat\"")) {
-                String lat = body.split("\"lat\":\"")[1].split("\"")[0];
-                String lon = body.split("\"lon\":\"")[1].split("\"")[0];
-                return lat + "," + lon;
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
+                reader.close();
+
+                String body = sb.toString();
+                if (body.contains("\"lon\"") && body.contains("\"lat\"")) {
+                    String lat = body.split("\"lat\":" )[1].split("[,}]")[0].trim();
+                    String lon = body.split("\"lon\":" )[1].split("[,}]")[0].trim();
+                    return lat + "," + lon;
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao geocodificar " + cidade + ": " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.err.println("Erro ao geocodificar " + cidade + ": " + e.getMessage());
         }
         return null;
     }
