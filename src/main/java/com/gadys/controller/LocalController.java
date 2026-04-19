@@ -44,6 +44,13 @@ public class LocalController {
         return localService.listarAprovados();
     }
 
+    @GetMapping("/rota")
+    public ResponseEntity<Local> getByRota(@RequestParam String rota) {
+        return localService.buscarPorRotaFrontend(rota)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Local> buscar(@PathVariable Long id) {
         return localService.buscarPorId(id)

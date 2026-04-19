@@ -52,6 +52,9 @@ public class Local {
     @Column(name = "imagem_url", length = 500)
     private String imagemUrl;
 
+    @Column(name = "rota_frontend")
+    private String rotaFrontend;
+
     @Column(name = "rota_frontend", length = 200)
     private String rotaFrontend;
 
@@ -121,6 +124,9 @@ public class Local {
 
     public String getImagemUrl() { return imagemUrl; }
     public void setImagemUrl(String imagemUrl) { this.imagemUrl = imagemUrl; }
+
+    public String getRotaFrontend() { return rotaFrontend; }
+    public void setRotaFrontend(String rotaFrontend) { this.rotaFrontend = rotaFrontend; }
 
     public String getRotaFrontend() { return rotaFrontend; }
     public void setRotaFrontend(String rotaFrontend) { this.rotaFrontend = rotaFrontend; }

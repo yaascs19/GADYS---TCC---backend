@@ -56,6 +56,10 @@ public class LocalService {
         return localRepository.findByNomeContaining(nome);
     }
 
+    public Optional<Local> buscarPorRotaFrontend(String rota) {
+        return localRepository.findByRotaFrontend(rota);
+    }
+
     public Local salvar(Local local) {
         return localRepository.save(local);
     }

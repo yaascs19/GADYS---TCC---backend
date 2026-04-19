@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LocalRepository extends JpaRepository<Local, Long> {
@@ -17,4 +18,5 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
 
     @Query("SELECT l FROM Local l WHERE l.nome LIKE %?1%")
     List<Local> findByNomeContaining(String nome);
+    Optional<Local> findByRotaFrontend(String rotaFrontend);
 }
