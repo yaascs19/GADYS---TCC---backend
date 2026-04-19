@@ -4,6 +4,7 @@ import com.gadys.dto.LocalDTO;
 import com.gadys.model.Local;
 import com.gadys.model.StatusLocal;
 import com.gadys.model.Usuario;
+import com.gadys.repository.LocalRepository;
 import com.gadys.service.LocalService;
 import com.gadys.service.UsuarioService;
 import javax.validation.Valid;
@@ -20,6 +21,9 @@ public class LocalController {
 
     @Autowired
     private LocalService localService;
+
+    @Autowired
+    private LocalRepository localRepository;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -167,6 +171,15 @@ public class LocalController {
         }
         localService.excluir(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/admin/diagnostico-coords")
+    public ResponseEntity<?> diagnostico() {
+        List<Local> todos = localRepository.findAll();
+        long semCoords = todos.stream()
+            .filter(l -> l.getCoordenadas() == null || l.getCoordenadas().trim().isEmpty())
+            .count();
+        return ResponseEntity.ok("Total: " + todos.size() + " | Sem coordenadas: " + semCoords);
     }
 
     @PostMapping("/admin/geocodificar-todos")
