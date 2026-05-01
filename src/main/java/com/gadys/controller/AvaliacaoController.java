@@ -74,7 +74,18 @@ public class AvaliacaoController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<?> excluir(@PathVariable Long id, @RequestParam Long usuarioId) {
+        Optional<Avaliacao> avaliacao = avaliacaoService.buscarPorId(id);
+        Optional<Usuario> usuario = usuarioService.buscarPorId(usuarioId);
+
+        if (avaliacao.isEmpty() || usuario.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!avaliacao.get().getUsuario().getId().equals(usuarioId) && !usuario.get().isAdmin()) {
+            return ResponseEntity.status(403).body("Sem permissão para excluir esta avaliação");
+        }
+
         avaliacaoService.excluir(id);
         return ResponseEntity.ok().build();
     }

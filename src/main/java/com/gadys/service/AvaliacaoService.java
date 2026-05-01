@@ -25,6 +25,10 @@ public class AvaliacaoService {
         return avaliacaoRepository.findMediaByLocalId(localId);
     }
     
+    public Optional<Avaliacao> buscarPorId(Long id) {
+        return avaliacaoRepository.findById(id);
+    }
+
     public Avaliacao salvar(Avaliacao avaliacao) {
         return avaliacaoRepository.save(avaliacao);
     }
