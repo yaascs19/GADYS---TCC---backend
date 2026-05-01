@@ -1,8 +1,10 @@
 package com.gadys.controller;
 
+import com.gadys.model.Avaliacao;
 import com.gadys.model.Comentario;
 import com.gadys.model.Local;
 import com.gadys.model.Usuario;
+import com.gadys.service.AvaliacaoService;
 import com.gadys.service.ComentarioService;
 import com.gadys.service.LocalService;
 import com.gadys.service.UsuarioService;
@@ -24,6 +26,9 @@ public class ComentarioController {
     private ComentarioService comentarioService;
     
     @Autowired
+    private AvaliacaoService avaliacaoService;
+
+    @Autowired
     private LocalService localService;
     
     @Autowired
@@ -38,6 +43,8 @@ public class ComentarioController {
             map.put("dataComentario", c.getDataComentario());
             map.put("usuarioId", c.getUsuario().getId());
             map.put("nomeUsuario", c.getUsuario().getNome());
+            Optional<Avaliacao> avaliacao = avaliacaoService.buscarPorLocalEUsuario(localId, c.getUsuario().getId());
+            map.put("nota", avaliacao.map(Avaliacao::getNota).orElse(null));
             return map;
         }).collect(Collectors.toList());
     }
