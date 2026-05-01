@@ -9,8 +9,11 @@ import com.gadys.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/avaliacoes")
@@ -27,8 +30,14 @@ public class AvaliacaoController {
     private UsuarioService usuarioService;
     
     @GetMapping("/local/{localId}")
-    public List<Avaliacao> listarPorLocal(@PathVariable Long localId) {
-        return avaliacaoService.listarPorLocal(localId);
+    public List<Map<String, Object>> listarPorLocal(@PathVariable Long localId) {
+        return avaliacaoService.listarPorLocal(localId).stream().map(a -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", a.getId());
+            map.put("nota", a.getNota());
+            map.put("usuarioId", a.getUsuario().getId());
+            return map;
+        }).collect(Collectors.toList());
     }
     
     @GetMapping("/local/{localId}/media")
@@ -55,13 +64,13 @@ public class AvaliacaoController {
         if (existente.isPresent()) {
             Avaliacao avaliacao = existente.get();
             avaliacao.atualizar(nota);
-            Avaliacao salva = avaliacaoService.salvar(avaliacao);
-            return ResponseEntity.ok(salva);
+            avaliacaoService.salvar(avaliacao);
+            return ResponseEntity.ok(Map.of("success", true));
         }
-        
+
         Avaliacao avaliacao = new Avaliacao(local.get(), usuario.get(), nota);
-        Avaliacao salva = avaliacaoService.salvar(avaliacao);
-        return ResponseEntity.ok(salva);
+        avaliacaoService.salvar(avaliacao);
+        return ResponseEntity.ok(Map.of("success", true));
     }
     
     @DeleteMapping("/{id}")

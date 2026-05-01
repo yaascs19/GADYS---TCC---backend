@@ -69,8 +69,8 @@ public class ComentarioController {
         }
         
         Comentario comentario = new Comentario(local.get(), usuario.get(), texto);
-        Comentario salvo = comentarioService.salvar(comentario);
-        return ResponseEntity.ok(salvo);
+        comentarioService.salvar(comentario);
+        return ResponseEntity.ok(Map.of("success", true));
     }
     
     @PutMapping("/{id}")
