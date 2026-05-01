@@ -9,8 +9,11 @@ import com.gadys.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/comentarios")
@@ -27,13 +30,29 @@ public class ComentarioController {
     private UsuarioService usuarioService;
     
     @GetMapping("/local/{localId}")
-    public List<Comentario> listarPorLocal(@PathVariable Long localId) {
-        return comentarioService.listarPorLocal(localId);
+    public List<Map<String, Object>> listarPorLocal(@PathVariable Long localId) {
+        return comentarioService.listarPorLocal(localId).stream().map(c -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("texto", c.getTexto());
+            map.put("dataComentario", c.getDataComentario());
+            map.put("usuarioId", c.getUsuario().getId());
+            map.put("nomeUsuario", c.getUsuario().getNome());
+            return map;
+        }).collect(Collectors.toList());
     }
-    
+
     @GetMapping("/usuario/{usuarioId}")
-    public List<Comentario> listarPorUsuario(@PathVariable Long usuarioId) {
-        return comentarioService.listarPorUsuario(usuarioId);
+    public List<Map<String, Object>> listarPorUsuario(@PathVariable Long usuarioId) {
+        return comentarioService.listarPorUsuario(usuarioId).stream().map(c -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", c.getId());
+            map.put("texto", c.getTexto());
+            map.put("dataComentario", c.getDataComentario());
+            map.put("usuarioId", c.getUsuario().getId());
+            map.put("nomeUsuario", c.getUsuario().getNome());
+            return map;
+        }).collect(Collectors.toList());
     }
     
     @PostMapping
