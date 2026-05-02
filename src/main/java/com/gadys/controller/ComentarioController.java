@@ -67,14 +67,22 @@ public class ComentarioController {
         if (texto == null || texto.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Texto do comentário é obrigatório");
         }
-        
+
         Optional<Local> local = localService.buscarPorId(localId);
         Optional<Usuario> usuario = usuarioService.buscarPorId(usuarioId);
-        
+
         if (local.isEmpty() || usuario.isEmpty()) {
             return ResponseEntity.badRequest().body("Local ou usuário não encontrado");
         }
-        
+
+        boolean jaComentou = comentarioService.listarPorLocal(localId)
+            .stream()
+            .anyMatch(c -> c.getUsuario().getId().equals(usuarioId));
+
+        if (jaComentou) {
+            return ResponseEntity.badRequest().body("Você já comentou neste local. Edite seu comentário existente.");
+        }
+
         Comentario comentario = new Comentario(local.get(), usuario.get(), texto);
         comentarioService.salvar(comentario);
         return ResponseEntity.ok(Map.of("success", true));
