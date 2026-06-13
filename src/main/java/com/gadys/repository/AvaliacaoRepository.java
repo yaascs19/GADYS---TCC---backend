@@ -15,4 +15,7 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     
     @Query("SELECT AVG(a.nota) FROM Avaliacao a WHERE a.local.id = ?1")
     Double findMediaByLocalId(Long localId);
+
+    @Query("SELECT a.local.id, AVG(a.nota), COUNT(a) FROM Avaliacao a GROUP BY a.local.id ORDER BY AVG(a.nota) DESC")
+    List<Object[]> findRanking();
 }
