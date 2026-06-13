@@ -39,6 +39,17 @@ public class AvaliacaoController {
             return map;
         }).collect(Collectors.toList());
     }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public List<Map<String, Object>> listarPorUsuario(@PathVariable Long usuarioId) {
+        return avaliacaoService.listarPorUsuario(usuarioId).stream().map(a -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", a.getId());
+            map.put("nota", a.getNota());
+            map.put("localId", a.getLocal().getId());
+            return map;
+        }).collect(Collectors.toList());
+    }
     
     @GetMapping("/local/{localId}/media")
     public ResponseEntity<Double> obterMedia(@PathVariable Long localId) {
@@ -59,7 +70,6 @@ public class AvaliacaoController {
             return ResponseEntity.badRequest().body("Local ou usuário não encontrado");
         }
         
-        // Verifica se já existe avaliação
         Optional<Avaliacao> existente = avaliacaoService.buscarPorLocalEUsuario(localId, usuarioId);
         if (existente.isPresent()) {
             Avaliacao avaliacao = existente.get();

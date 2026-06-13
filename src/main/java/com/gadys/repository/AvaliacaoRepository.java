@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     List<Avaliacao> findByLocalId(Long localId);
     Optional<Avaliacao> findByLocalIdAndUsuarioId(Long localId, Long usuarioId);
+    List<Avaliacao> findByUsuarioId(Long usuarioId);
     
     @Query("SELECT AVG(a.nota) FROM Avaliacao a WHERE a.local.id = ?1")
     Double findMediaByLocalId(Long localId);

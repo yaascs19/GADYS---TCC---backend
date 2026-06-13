@@ -17,6 +17,10 @@ public class AvaliacaoService {
         return avaliacaoRepository.findByLocalId(localId);
     }
     
+    public List<Avaliacao> listarPorUsuario(Long usuarioId) {
+        return avaliacaoRepository.findByUsuarioId(usuarioId);
+    }
+    
     public Optional<Avaliacao> buscarPorLocalEUsuario(Long localId, Long usuarioId) {
         return avaliacaoRepository.findByLocalIdAndUsuarioId(localId, usuarioId);
     }
