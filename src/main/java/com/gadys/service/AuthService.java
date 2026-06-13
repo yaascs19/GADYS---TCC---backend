@@ -77,7 +77,7 @@ public class AuthService {
 
         Usuario usuario = usuarioOpt.get();
 
-        if (Boolean.FALSE.equals(usuario.getAtivo())) {
+        if ("INATIVO".equals(usuario.getAtivo())) {
             logger.warn("❌ LOGIN FALHOU - Conta inativada: {}", request.getEmail());
             return new LoginResponse(false, "Conta inativada. Entre em contato com o administrador.");
         }
@@ -126,7 +126,7 @@ public class AuthService {
         Usuario usuario;
         if (usuarioOpt.isPresent()) {
             usuario = usuarioOpt.get();
-            if (Boolean.FALSE.equals(usuario.getAtivo())) {
+            if ("INATIVO".equals(usuario.getAtivo())) {
                 return new LoginResponse(false, "Conta inativada. Entre em contato com o administrador.");
             }
             logger.info("✅ LOGIN GOOGLE - Usuário existente: {}", email);
