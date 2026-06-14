@@ -95,6 +95,14 @@ public class UsuarioController {
         return ResponseEntity.ok(salvo);
     }
 
+    @PatchMapping("/{id}/foto")
+    public ResponseEntity<?> atualizarFoto(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        Optional<Usuario> usuarioOpt = usuarioService.buscarPorId(id);
+        if (usuarioOpt.isEmpty()) return ResponseEntity.notFound().build();
+        usuarioService.atualizarFoto(id, body.get("fotoPerfil"));
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         if (usuarioService.buscarPorId(id).isEmpty()) {

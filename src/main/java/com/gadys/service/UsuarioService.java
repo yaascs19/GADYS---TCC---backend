@@ -59,4 +59,10 @@ public class UsuarioService {
     public void excluir(Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario atualizarFoto(Long id, String fotoPerfil) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow();
+        usuario.setFotoPerfil(fotoPerfil);
+        return usuarioRepository.save(usuario);
+    }
 }
