@@ -1,5 +1,6 @@
 package com.gadys.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import com.gadys.dto.LoginRequest;
 import com.gadys.dto.LoginResponse;
 import com.gadys.model.Usuario;
@@ -27,8 +28,8 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse response = authService.login(request);
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        LoginResponse response = authService.login(request, httpRequest);
         return ResponseEntity.ok(response);
     }
 

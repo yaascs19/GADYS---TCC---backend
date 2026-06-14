@@ -33,6 +33,9 @@ public class UsuarioController {
             map.put("tipoUsuario", u.getTipoUsuario());
             map.put("ativo", u.getAtivo());
             map.put("dataCadastro", u.getDataCadastro());
+            map.put("ultimoAcesso", u.getUltimoAcesso());
+            map.put("totalAcessos", u.getTotalAcessos());
+            map.put("ipAcesso", u.getIpAcesso());
             return map;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(result);

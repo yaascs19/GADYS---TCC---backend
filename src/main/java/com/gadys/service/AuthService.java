@@ -1,5 +1,6 @@
 package com.gadys.service;
 
+import javax.servlet.http.HttpServletRequest;
 import com.gadys.dto.LoginRequest;
 import com.gadys.dto.LoginResponse;
 import com.gadys.model.PasswordResetToken;
@@ -64,7 +65,7 @@ public class AuthService {
         }
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request, HttpServletRequest httpRequest) {
         if (!validarRecaptcha(request.getRecaptchaToken())) {
             logger.warn("❌ LOGIN BLOQUEADO - reCAPTCHA inválido");
             return new LoginResponse(false, "Verificação de segurança falhou.");
@@ -88,6 +89,13 @@ public class AuthService {
             logger.warn("❌ LOGIN FALHOU - Senha incorreta para: {}", request.getEmail());
             return new LoginResponse(false, "Senha incorreta");
         }
+
+        usuario.setUltimoAcesso(LocalDateTime.now());
+        usuario.setTotalAcessos(usuario.getTotalAcessos() + 1);
+        String ip = httpRequest.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isBlank()) ip = httpRequest.getRemoteAddr();
+        usuario.setIpAcesso(ip);
+        usuarioRepository.save(usuario);
 
         logger.info("✅ LOGIN REALIZADO COM SUCESSO!");
         logger.info("👤 Usuário: {} ({})", usuario.getNome(), usuario.getEmail());
