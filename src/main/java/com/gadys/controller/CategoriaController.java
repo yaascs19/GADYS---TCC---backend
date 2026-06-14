@@ -18,6 +18,11 @@ public class CategoriaController {
         this.repository = repository;
     }
 
+    @GetMapping("/globais")
+    public List<Categoria> listarGlobais() {
+        return repository.findByEstadoIsNull();
+    }
+
     @GetMapping("/{estado}")
     public List<Categoria> listarPorEstado(@PathVariable String estado) {
         return repository.findByEstado(estado);
