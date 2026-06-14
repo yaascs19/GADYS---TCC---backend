@@ -11,6 +11,7 @@ public class SugestaoDTO {
     private String enviadoPor;
     private Integer usuarioId;
     private String status;
+    private String categoriaCustom;
 
     public SugestaoDTO() {}
 
@@ -38,6 +39,6 @@ public class SugestaoDTO {
     public Integer getUsuarioId() { return usuarioId; }
     public void setUsuarioId(Integer usuarioId) { this.usuarioId = usuarioId; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getCategoriaCustom() { return categoriaCustom; }
+    public void setCategoriaCustom(String categoriaCustom) { this.categoriaCustom = categoriaCustom; }
 }

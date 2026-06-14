@@ -39,6 +39,7 @@ public class SugestaoController {
         sugestao.setImagemUrl(dto.getImagemUrl());
         sugestao.setEnviadoPor(dto.getEnviadoPor());
         sugestao.setUsuarioId(dto.getUsuarioId());
+        sugestao.setCategoriaCustom(dto.getCategoriaCustom());
         sugestao.setStatus("PENDENTE");
         return ResponseEntity.ok(service.salvar(sugestao));
     }

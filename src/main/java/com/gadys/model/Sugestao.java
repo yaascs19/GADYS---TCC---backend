@@ -29,6 +29,9 @@ public class Sugestao {
 
     private String status = "PENDENTE";
 
+    @Column(name = "categoria_custom", length = 100)
+    private String categoriaCustom;
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
@@ -68,6 +71,9 @@ public class Sugestao {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getCategoriaCustom() { return categoriaCustom; }
+    public void setCategoriaCustom(String categoriaCustom) { this.categoriaCustom = categoriaCustom; }
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
