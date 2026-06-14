@@ -12,6 +12,7 @@ public class SugestaoDTO {
     private Integer usuarioId;
     private String status;
     private String categoriaCustom;
+    private String rascunhoConteudo;
 
     public SugestaoDTO() {}
 
@@ -41,4 +42,7 @@ public class SugestaoDTO {
 
     public String getCategoriaCustom() { return categoriaCustom; }
     public void setCategoriaCustom(String categoriaCustom) { this.categoriaCustom = categoriaCustom; }
+
+    public String getRascunhoConteudo() { return rascunhoConteudo; }
+    public void setRascunhoConteudo(String rascunhoConteudo) { this.rascunhoConteudo = rascunhoConteudo; }
 }

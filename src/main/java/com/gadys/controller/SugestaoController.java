@@ -44,6 +44,11 @@ public class SugestaoController {
         return ResponseEntity.ok(service.salvar(sugestao));
     }
 
+    @PutMapping("/{id}/rascunho")
+    public ResponseEntity<Sugestao> salvarRascunho(@PathVariable Long id, @RequestBody SugestaoDTO dto) {
+        return ResponseEntity.ok(service.salvarRascunho(id, dto));
+    }
+
     @PostMapping("/{id}/analisar")
     public ResponseEntity<Sugestao> analisar(@PathVariable Long id) {
         return ResponseEntity.ok(service.analisar(id));

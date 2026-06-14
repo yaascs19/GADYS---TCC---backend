@@ -32,6 +32,9 @@ public class Sugestao {
     @Column(name = "categoria_custom", length = 100)
     private String categoriaCustom;
 
+    @Column(name = "rascunho_conteudo", columnDefinition = "NVARCHAR(MAX)")
+    private String rascunhoConteudo;
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
@@ -74,6 +77,9 @@ public class Sugestao {
 
     public String getCategoriaCustom() { return categoriaCustom; }
     public void setCategoriaCustom(String categoriaCustom) { this.categoriaCustom = categoriaCustom; }
+
+    public String getRascunhoConteudo() { return rascunhoConteudo; }
+    public void setRascunhoConteudo(String rascunhoConteudo) { this.rascunhoConteudo = rascunhoConteudo; }
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
