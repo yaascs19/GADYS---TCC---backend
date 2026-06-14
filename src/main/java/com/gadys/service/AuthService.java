@@ -55,7 +55,9 @@ public class AuthService {
             boolean success = Boolean.TRUE.equals(response.get("success"));
             double score = response.get("score") != null ? ((Number) response.get("score")).doubleValue() : 0.0;
 
-            return success && score >= 0.5;
+            logger.info("reCAPTCHA score: {} | success: {}", score, success);
+
+            return success && score >= 0.3;
         } catch (Exception e) {
             logger.error("Erro ao validar reCAPTCHA: {}", e.getMessage());
             return false;
