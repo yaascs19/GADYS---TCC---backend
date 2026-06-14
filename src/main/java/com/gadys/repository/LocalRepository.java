@@ -23,4 +23,5 @@ public interface LocalRepository extends JpaRepository<Local, Long> {
     List<Local> findSemCoordenadas();
 
     Optional<Local> findByRotaFrontend(String rotaFrontend);
+    boolean existsBySubcategoriaIgnoreCaseAndEstadoAndStatus(String subcategoria, String estado, StatusLocal status);
 }

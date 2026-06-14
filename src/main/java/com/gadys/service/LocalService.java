@@ -4,18 +4,26 @@ import com.gadys.dto.LocalDTO;
 import com.gadys.model.Local;
 import com.gadys.model.StatusLocal;
 import com.gadys.model.Usuario;
+import com.gadys.repository.CategoriaRepository;
 import com.gadys.repository.LocalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class LocalService {
 
-    @Autowired
-    private LocalRepository localRepository;
+    private static final List<String> CATEGORIAS_FIXAS = List.of(
+        "Monumentos", "Lugar Paradísíaco", "Restaurantes", "Costume Cultural"
+    );
+
+    private final LocalRepository localRepository;
+    private final CategoriaRepository categoriaRepository;
+
+    public LocalService(LocalRepository localRepository, CategoriaRepository categoriaRepository) {
+        this.localRepository = localRepository;
+        this.categoriaRepository = categoriaRepository;
+    }
 
     public List<Local> listarTodos() {
         return localRepository.findAll();
@@ -95,11 +103,26 @@ public class LocalService {
         localRepository.findById(id).ifPresent(local -> {
             local.rejeitar(admin);
             localRepository.save(local);
+            limparCategoriaSeVazia(local.getSubcategoria(), local.getEstado());
         });
     }
 
     public void excluir(Long id) {
-        localRepository.deleteById(id);
+        localRepository.findById(id).ifPresent(local -> {
+            String subcategoria = local.getSubcategoria();
+            String estado = local.getEstado();
+            localRepository.delete(local);
+            limparCategoriaSeVazia(subcategoria, estado);
+        });
+    }
+
+    private void limparCategoriaSeVazia(String subcategoria, String estado) {
+        if (subcategoria == null || CATEGORIAS_FIXAS.contains(subcategoria)) return;
+        boolean aindaExiste = localRepository
+            .existsBySubcategoriaIgnoreCaseAndEstadoAndStatus(subcategoria, estado, StatusLocal.ATIVO);
+        if (!aindaExiste) {
+            categoriaRepository.deleteByNomeIgnoreCaseAndEstado(subcategoria, estado);
+        }
     }
 
     public int geocodificarLocaisSemCoordenadas() {
