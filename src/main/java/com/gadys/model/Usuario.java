@@ -38,6 +38,9 @@ public class Usuario {
     @Column(name = "ip_acesso", length = 45)
     private String ipAcesso;
 
+    @Column(name = "foto_perfil", length = 500)
+    private String fotoPerfil;
+
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
@@ -81,6 +84,9 @@ public class Usuario {
 
     public String getIpAcesso() { return ipAcesso; }
     public void setIpAcesso(String ipAcesso) { this.ipAcesso = ipAcesso; }
+
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 
     public LocalDateTime getDataCadastro() { return dataCadastro; }
     public void setDataCadastro(LocalDateTime dataCadastro) { this.dataCadastro = dataCadastro; }

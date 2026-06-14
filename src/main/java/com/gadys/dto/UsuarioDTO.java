@@ -22,7 +22,8 @@ public class UsuarioDTO {
     private String senha;
     
     private TipoUsuario tipoUsuario;
-    
+    private String fotoPerfil;
+
     // Construtores
     public UsuarioDTO() {}
     
@@ -47,4 +48,7 @@ public class UsuarioDTO {
     
     public TipoUsuario getTipoUsuario() { return tipoUsuario; }
     public void setTipoUsuario(TipoUsuario tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 }

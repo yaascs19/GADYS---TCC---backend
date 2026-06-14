@@ -36,6 +36,7 @@ public class UsuarioController {
             map.put("ultimoAcesso", u.getUltimoAcesso());
             map.put("totalAcessos", u.getTotalAcessos());
             map.put("ipAcesso", u.getIpAcesso());
+            map.put("fotoPerfil", u.getFotoPerfil());
             return map;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(result);
@@ -89,6 +90,7 @@ public class UsuarioController {
         if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
             usuario.setSenha(dto.getSenha());
         }
+        if (dto.getFotoPerfil() != null) usuario.setFotoPerfil(dto.getFotoPerfil());
         Usuario salvo = usuarioService.salvar(usuario);
         return ResponseEntity.ok(salvo);
     }
