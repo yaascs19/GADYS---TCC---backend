@@ -13,14 +13,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,8 +24,6 @@ import java.util.UUID;
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
-    private static final String RECAPTCHA_SECRET = System.getenv().getOrDefault("RECAPTCHA_SECRET_KEY", "");
-    private static final String RECAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify";
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -41,38 +35,8 @@ public class AuthService {
     private JavaMailSender mailSender;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private RestTemplate restTemplate = new RestTemplate();
-
-    private boolean validarRecaptcha(String token) {
-        if (token == null || token.isBlank()) return false;
-        try {
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("secret", RECAPTCHA_SECRET);
-            params.add("response", token);
-
-            Map response = restTemplate.postForObject(RECAPTCHA_URL, params, Map.class);
-            if (response == null) return false;
-
-            boolean success = Boolean.TRUE.equals(response.get("success"));
-            double score = response.get("score") != null ? ((Number) response.get("score")).doubleValue() : 0.0;
-
-            logger.info("reCAPTCHA score: {} | success: {}", score, success);
-
-            return success && score >= 0.3;
-        } catch (Exception e) {
-            logger.error("Erro ao validar reCAPTCHA: {}", e.getMessage());
-            return false;
-        }
-    }
 
     public LoginResponse login(LoginRequest request, HttpServletRequest httpRequest) {
-        String recaptcha = request.getRecaptchaToken();
-        boolean skipRecaptcha = recaptcha == null || recaptcha.isBlank() || recaptcha.equals("mobile");
-        if (!skipRecaptcha && !validarRecaptcha(recaptcha)) {
-            logger.warn("❌ LOGIN BLOQUEADO - reCAPTCHA inválido");
-            return new LoginResponse(false, "Verificação de segurança falhou.");
-        }
-
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(request.getEmail());
 
         if (usuarioOpt.isEmpty()) {
@@ -108,11 +72,6 @@ public class AuthService {
     }
 
     public LoginResponse cadastrar(Usuario usuario) {
-        if (!validarRecaptcha(usuario.getRecaptchaToken())) {
-            logger.warn("❌ CADASTRO BLOQUEADO - reCAPTCHA inválido");
-            return new LoginResponse(false, "Verificação de segurança falhou.");
-        }
-
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             logger.warn("❌ CADASTRO REJEITADO - Email já existe: {}", usuario.getEmail());
             return new LoginResponse(false, "Email já cadastrado");
