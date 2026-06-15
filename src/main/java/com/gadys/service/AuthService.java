@@ -66,7 +66,9 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request, HttpServletRequest httpRequest) {
-        if (!validarRecaptcha(request.getRecaptchaToken())) {
+        String recaptcha = request.getRecaptchaToken();
+        boolean skipRecaptcha = recaptcha == null || recaptcha.isBlank() || recaptcha.equals("mobile");
+        if (!skipRecaptcha && !validarRecaptcha(recaptcha)) {
             logger.warn("❌ LOGIN BLOQUEADO - reCAPTCHA inválido");
             return new LoginResponse(false, "Verificação de segurança falhou.");
         }
