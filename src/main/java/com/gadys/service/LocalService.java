@@ -121,7 +121,10 @@ public class LocalService {
         boolean aindaExiste = localRepository
             .existsBySubcategoriaIgnoreCaseAndEstadoAndStatus(subcategoria, estado, StatusLocal.ATIVO);
         if (!aindaExiste) {
-            categoriaRepository.deleteByNomeIgnoreCaseAndEstado(subcategoria, estado);
+            categoriaRepository.findByNomeIgnoreCase(subcategoria).ifPresent(cat -> {
+                cat.removeEstado(estado);
+                categoriaRepository.save(cat);
+            });
         }
     }
 
