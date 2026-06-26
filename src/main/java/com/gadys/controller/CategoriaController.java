@@ -38,14 +38,17 @@ public class CategoriaController {
     public ResponseEntity<?> criarOuAdicionarEstado(@RequestBody Map<String, String> body) {
         String nome = body.get("nome");
         String estado = body.get("estado");
+        if (estado == null || estado.isBlank()) {
+            return ResponseEntity.badRequest().body("Estado é obrigatório para criar uma categoria.");
+        }
         Optional<Categoria> existing = repository.findByNomeIgnoreCase(nome);
         if (existing.isPresent()) {
             Categoria cat = existing.get();
-            if (estado != null) cat.addEstado(estado);
+            cat.addEstado(estado);
             return ResponseEntity.ok(repository.save(cat));
         }
         Categoria nova = new Categoria(nome);
-        if (estado != null) nova.addEstado(estado);
+        nova.addEstado(estado);
         return ResponseEntity.ok(repository.save(nova));
     }
 
