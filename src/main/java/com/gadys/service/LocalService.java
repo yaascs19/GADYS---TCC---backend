@@ -118,8 +118,8 @@ public class LocalService {
 
     private void limparCategoriaSeVazia(String subcategoria, String estado) {
         if (subcategoria == null || CATEGORIAS_FIXAS.contains(subcategoria)) return;
-        boolean aindaExiste = localRepository
-            .existsBySubcategoriaIgnoreCaseAndEstadoAndStatus(subcategoria, estado, StatusLocal.ATIVO);
+        boolean aindaExiste = localRepository.existsBySubcategoriaIgnoreCaseAndEstadoAndStatus(subcategoria, estado, StatusLocal.ATIVO)
+            || localRepository.existsBySubcategoriaIgnoreCaseAndEstadoAndStatus(subcategoria, estado, StatusLocal.INATIVO);
         if (!aindaExiste) {
             categoriaRepository.findByNomeIgnoreCase(subcategoria).ifPresent(cat -> {
                 cat.removeEstado(estado);
