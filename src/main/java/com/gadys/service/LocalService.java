@@ -123,7 +123,11 @@ public class LocalService {
         if (!aindaExiste) {
             categoriaRepository.findByNomeIgnoreCase(subcategoria).ifPresent(cat -> {
                 cat.removeEstado(estado);
-                categoriaRepository.save(cat);
+                if (cat.getEstados().isEmpty()) {
+                    categoriaRepository.delete(cat);
+                } else {
+                    categoriaRepository.save(cat);
+                }
             });
         }
     }
