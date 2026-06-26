@@ -26,12 +26,12 @@ public class CategoriaController {
 
     @GetMapping("/globais")
     public List<Categoria> listarGlobais() {
-        return repository.findByEstadosIsEmpty();
+        return repository.findGlobais();
     }
 
     @GetMapping("/estado/{estado}")
     public List<Categoria> listarPorEstado(@PathVariable String estado) {
-        return repository.findByEstadosContaining(estado);
+        return repository.findByEstado(estado);
     }
 
     @PostMapping
