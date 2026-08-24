@@ -143,6 +143,13 @@ GO
 -- Senha '123456' hasheada com BCrypt (custo 10)
 -- ============================================================
 
+-- ============================================================
+-- USUARIOS INICIAIS
+-- Obs: O DataInitializer.java já insere esses usuários
+-- automaticamente ao subir a aplicação.
+-- Estes INSERTs são apenas fallback manual se necessário.
+-- ============================================================
+
 IF NOT EXISTS (SELECT 1 FROM Usuario WHERE email = 'admin@gadys.com')
     INSERT INTO Usuario (nome, email, senha, tipo_usuario)
     VALUES ('Administrador', 'admin@gadys.com',
@@ -163,3 +170,11 @@ IF NOT EXISTS (SELECT 1 FROM Usuario WHERE email = 'gadys2026@gmail.com')
             '$2b$10$V9oOs1z9xanpZn30kd906uwte03ql4eiJA4T.sKIRVthlj7tFoZMy',
             'ADM');
 GO
+
+-- ============================================================
+-- LOCAIS DO SITE
+-- NÃO É NECESSÁRIO INSERIR MANUALMENTE.
+-- O DataInitializer.java popula todos os 52 locais do site
+-- automaticamente ao subir a aplicação, verificando duplicatas
+-- por rotaFrontend ou nome antes de inserir.
+-- ============================================================
