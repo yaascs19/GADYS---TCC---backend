@@ -13,8 +13,10 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("https://gadys-tcc.vercel.app");
+        configuration.addAllowedOrigin("https://gadys-kappa.vercel.app");
         configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedOriginPattern("https://*.app.github.dev");
+        configuration.addAllowedOriginPattern("https://gadys-*.vercel.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
 
