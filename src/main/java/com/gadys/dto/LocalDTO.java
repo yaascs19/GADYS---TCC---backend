@@ -26,6 +26,7 @@ public class LocalDTO {
     private String preco;
     private String informacoesAdicionais;
     private String imagemUrl;
+    private String rotaFrontend;
     private String enviadoPor;
 
     public LocalDTO() {}
@@ -68,6 +69,9 @@ public class LocalDTO {
 
     public String getImagemUrl() { return imagemUrl; }
     public void setImagemUrl(String imagemUrl) { this.imagemUrl = imagemUrl; }
+
+    public String getRotaFrontend() { return rotaFrontend; }
+    public void setRotaFrontend(String rotaFrontend) { this.rotaFrontend = rotaFrontend; }
 
     public String getEnviadoPor() { return enviadoPor; }
     public void setEnviadoPor(String enviadoPor) { this.enviadoPor = enviadoPor; }

@@ -87,6 +87,7 @@ public class LocalService {
             local.setPreco(dto.getPreco());
             local.setInformacoesAdicionais(dto.getInformacoesAdicionais());
             local.setImagemUrl(dto.getImagemUrl());
+            local.setRotaFrontend(dto.getRotaFrontend());
             local.setEnviadoPor(dto.getEnviadoPor());
             return localRepository.save(local);
         }).orElseThrow(() -> new RuntimeException("Local não encontrado"));

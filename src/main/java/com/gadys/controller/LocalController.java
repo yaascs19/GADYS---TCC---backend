@@ -102,6 +102,7 @@ public class LocalController {
         local.setPreco(dto.getPreco());
         local.setInformacoesAdicionais(dto.getInformacoesAdicionais());
         local.setImagemUrl(dto.getImagemUrl());
+        local.setRotaFrontend(dto.getRotaFrontend());
         local.setEnviadoPor(dto.getEnviadoPor());
         local.setStatus(StatusLocal.PENDENTE);
 
